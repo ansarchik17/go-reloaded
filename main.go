@@ -219,11 +219,27 @@ func main() {
 
 		if val == "a" || val == "A" {
 			if i != len(words)-1 {
-				if strings.Contains(vowels, strings.ToLower(string(words[i+1][0]))) {
+				if words[i+1] == "and" {
+					continue
+				} else if strings.Contains(vowels, strings.ToLower(string(words[i+1][0]))) && len(words[i+1]) > 1 {
 					if val == "a" {
 						words[i] = "an"
 					} else {
 						words[i] = "An"
+					}
+				}
+			}
+		}
+
+		if val == "an" || val == "An" {
+			if i != len(words)-1 {
+				if words[i+1] == "and" {
+					continue
+				} else if !strings.Contains(vowels, strings.ToLower(string(words[i+1][0]))) && len(words[i+1]) > 1 {
+					if val == "an" {
+						words[i] = "a"
+					} else {
+						words[i] = "A"
 					}
 				}
 			}
@@ -260,29 +276,42 @@ func main() {
 
 func Cap(s []string, n int, m int) {
 	for n > 0 && m >= 0 {
-		if len(s[m]) == 1 {
-			s[m] = strings.ToUpper(s[m])
-		} else {
-			s[m] = strings.ToUpper(s[m][:1]) + s[m][1:]
+		if s[m] != "" {
+			if len(s[m]) == 1 {
+				s[m] = strings.ToUpper(s[m])
+				n--
+			} else {
+				s[m] = strings.ToUpper(s[m][:1]) + s[m][1:]
+				n--
+			}
 		}
+
 		m--
-		n--
+
 	}
 }
 
 func Low(s []string, n int, m int) {
 	for n > 0 && m >= 0 {
-		s[m] = strings.ToLower(s[m])
+		if s[m] != "" {
+			s[m] = strings.ToLower(s[m])
+			n--
+		}
+
 		m--
-		n--
+
 	}
 }
 
 func Up(s []string, n int, m int) {
 	for n > 0 && m >= 0 {
-		s[m] = strings.ToUpper(s[m])
+		if s[m] != "" {
+			s[m] = strings.ToUpper(s[m])
+			n--
+		}
+
 		m--
-		n--
+
 	}
 }
 
