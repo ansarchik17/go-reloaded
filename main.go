@@ -17,6 +17,7 @@ func main() {
 	content, _ := os.ReadFile(readF)
 
 	words := strings.Split(string(content), " ")
+
 	// ss := words[1]
 	// fmt.Println(ss[:5])
 	fmt.Println("before editing: ")
@@ -27,6 +28,18 @@ func main() {
 			fmt.Print(val)
 		}
 	}
+
+	fmt.Println()
+	words = CleanStr(words)
+	fmt.Println("Cleaned STring: ")
+	for i, val := range words {
+		if i != len(words)-1 {
+			fmt.Printf("%v-", val)
+		} else {
+			fmt.Print(val)
+		}
+	}
+
 	fmt.Println()
 	// to CAP and LOW and UP :
 
@@ -41,6 +54,10 @@ func main() {
 			} else if strings.HasSuffix(words[i+1], ")") && val == "(cap," && i > 0 {
 				k := TakeNumFromString(words[i+1])
 				Cap(words, k, i-1)
+				words = append(words[:i], words[i+2:]...)
+				i -= 2
+			} else if val == "(cap" && words[i+1] == ")" {
+				Cap(words, 1, i-1)
 				words = append(words[:i], words[i+2:]...)
 				i -= 2
 			}
@@ -145,7 +162,7 @@ func main() {
 
 	count := 0
 	for _, val := range words {
-		if val == "'" {
+		if val == "'" || strings.HasPrefix(val, "'") || strings.HasSuffix(val, "'") {
 			count++
 		}
 	}
@@ -154,38 +171,23 @@ func main() {
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
-		if val == "'" {
+		if strings.HasPrefix(val, "'") || strings.HasSuffix(val, "'") {
 			if count > 0 {
-				if i < len(words)-1 {
-					words[i+1] = val + words[i+1]
-					words = append(words[:i], words[i+1:]...)
+				if val == "'" {
+					if i < len(words)-1 {
+						words[i+1] = val + words[i+1]
+						words = append(words[:i], words[i+1:]...)
+						i--
+						count--
+					}
+				} else if strings.HasSuffix(val, "'") {
+					words[i] = words[i][:len(words[i])-1]
+					words[i+1] = val[len(val)-1:] + words[i+1]
+
+					count--
+				} else if strings.HasPrefix(val, "'") {
 					count--
 				}
-			} else {
-
-				if val == "'" {
-					if i != 0 {
-
-						words[i-1] += val
-						if i == len(words)-1 {
-							words = words[:i]
-							break
-						} else {
-							words = append(words[:i], words[i+1:]...)
-							i--
-						}
-
-					}
-				}
-
-				if i > 0 && len(val) >= 1 && val[0] == '\'' {
-
-					words[i-1] += string(val[0])
-
-					words[i] = val[1:]
-
-				}
-
 			}
 		}
 	}
@@ -217,6 +219,20 @@ func main() {
 			words = append(words[:i], words[i+1:]...)
 			i--
 		}
+	}
+
+	fmt.Println()
+	fmt.Println("fourth editing: HEX -- BIN")
+	for i, val := range words {
+		if i != len(words)-1 {
+			fmt.Printf("%v-", val)
+		} else {
+			fmt.Print(val)
+		}
+	}
+
+	for i := 0; i < len(words); i++ {
+		val := words[i]
 
 		if val == "a" || val == "A" {
 			if i != len(words)-1 {
@@ -249,7 +265,7 @@ func main() {
 	}
 
 	fmt.Println()
-	fmt.Println("fourth editing: VOWELS")
+	fmt.Println("fifth editing: VOWELS ")
 	for i, val := range words {
 		if i != len(words)-1 {
 			fmt.Printf("%v-", val)
@@ -257,20 +273,20 @@ func main() {
 			fmt.Print(val)
 		}
 	}
-	fmt.Println()
-
-	fmt.Println()
 
 	fmt.Println()
 	fmt.Println()
-	fmt.Println(string(content))
+	fmt.Println()
+	fmt.Printf("Initially: %v\n", string(content))
+
 	fmt.Println()
 
 	contPaste := strings.Join(words, " ")
+	// contPaste = strings.TrimRight(contPaste, "!")
 	os.WriteFile(writeF, []byte(contPaste), 0o644)
 
 	contR, _ := os.ReadFile(writeF)
-	fmt.Println(string(contR))
+	fmt.Printf("Result: %v\n", string(contR))
 
 	fmt.Println()
 }
@@ -331,6 +347,7 @@ func TakeNumFromString(s string) int {
 }
 
 func HexToDec(s string) string {
+	s = strings.TrimSpace(s)
 	temp, err := strconv.ParseInt(s, 16, 64)
 	if err != nil {
 		return "0"
@@ -340,10 +357,34 @@ func HexToDec(s string) string {
 }
 
 func BinToDec(s string) string {
+	s = strings.TrimSpace(s)
 	temp, err := strconv.ParseInt(s, 2, 64)
 	if err != nil {
 		return "0"
 	}
 	res := strconv.Itoa(int(temp))
 	return res
+}
+
+func CleanStr(s []string) []string {
+	ss := ""
+	for i := 0; i < len(s); i++ {
+		val := s[i]
+
+		if val != "" {
+			if val == ")" && i != 0 {
+				ss = ss[:len(ss)-1]
+				ss += val
+			} else {
+				ss += val
+			}
+
+			if i < len(s)-1 {
+				ss += " "
+			}
+		}
+
+	}
+	fmt.Println(ss)
+	return strings.Split(ss, " ")
 }
