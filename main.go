@@ -86,7 +86,7 @@ func main() {
 		}
 
 	}
-
+	words = CleanStr(words)
 	fmt.Println()
 	fmt.Println("first editing: CAP_LOW_UP")
 	for i, val := range words {
@@ -103,7 +103,7 @@ func main() {
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
-		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" {
+		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == "." {
 
 			words[i-1] += val
 			if i == len(words)-1 && i > 0 {
@@ -118,7 +118,7 @@ func main() {
 
 		}
 
-		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':') {
+		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':' || val == ".") {
 
 			words[i-1] += string(val[0])
 			words[i] = val[1:]
@@ -148,7 +148,7 @@ func main() {
 		}
 
 	}
-
+	words = CleanStr(words)
 	fmt.Println()
 	fmt.Println("second editing: coma-toma")
 	for i, val := range words {
@@ -166,6 +166,7 @@ func main() {
 			count++
 		}
 	}
+
 	count /= 2
 
 	for i := 0; i < len(words); i++ {
@@ -177,7 +178,7 @@ func main() {
 					if i < len(words)-1 {
 						words[i+1] = val + words[i+1]
 						words = append(words[:i], words[i+1:]...)
-						i--
+
 						count--
 					}
 				} else if strings.HasSuffix(val, "'") {
@@ -188,10 +189,20 @@ func main() {
 				} else if strings.HasPrefix(val, "'") {
 					count--
 				}
+			} else {
+				if val == "'" {
+					words[i-1] = words[i-1] + val
+					words = append(words[:i], words[i+1:]...)
+					i--
+				} else if strings.HasPrefix(val, "'") {
+					words[i-1] = words[i-1] + string(val[0])
+					words[i] = words[i][1:]
+
+				}
 			}
 		}
 	}
-
+	words = CleanStr(words)
 	fmt.Println()
 	fmt.Println("third editing: \"'\"-symbols ")
 	for i, val := range words {
@@ -235,7 +246,7 @@ func main() {
 		val := words[i]
 
 		if val == "a" || val == "A" {
-			if i != len(words)-1 {
+			if i != len(words)-1 && words[i+1] != "" {
 				if words[i+1] == "and" {
 					continue
 				} else if strings.Contains(vowels, strings.ToLower(string(words[i+1][0]))) && len(words[i+1]) > 1 {
@@ -249,7 +260,7 @@ func main() {
 		}
 
 		if val == "an" || val == "An" {
-			if i != len(words)-1 {
+			if i != len(words)-1 && words[i+1] != "" {
 				if words[i+1] == "and" {
 					continue
 				} else if !strings.Contains(vowels, strings.ToLower(string(words[i+1][0]))) && len(words[i+1]) > 1 {
@@ -263,7 +274,7 @@ func main() {
 		}
 
 	}
-
+	words = CleanStr(words)
 	fmt.Println()
 	fmt.Println("fifth editing: VOWELS ")
 	for i, val := range words {
@@ -387,4 +398,13 @@ func CleanStr(s []string) []string {
 	}
 	fmt.Println(ss)
 	return strings.Split(ss, " ")
+}
+
+func isWord(s string) bool {
+	for _, val := range s {
+		if strings.Contains(alp, string(val)) {
+			return true
+		}
+	}
+	return false
 }
