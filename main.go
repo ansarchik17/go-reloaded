@@ -20,27 +20,8 @@ func main() {
 
 	// ss := words[1]
 	// fmt.Println(ss[:5])
-	fmt.Println("before editing: ")
-	for i, val := range words {
-		if i != len(words)-1 {
-			fmt.Printf("%v-", val)
-		} else {
-			fmt.Print(val)
-		}
-	}
 
-	fmt.Println()
-	words = CleanStr(words)
-	fmt.Println("Cleaned STring: ")
-	for i, val := range words {
-		if i != len(words)-1 {
-			fmt.Printf("%v-", val)
-		} else {
-			fmt.Print(val)
-		}
-	}
 
-	fmt.Println()
 	// to CAP and LOW and UP :
 
 	for i := 0; i < len(words); i++ {
@@ -51,7 +32,12 @@ func main() {
 				Cap(words, 1, i-1)
 				words = append(words[:i], words[i+1:]...)
 				i--
-			} else if strings.HasSuffix(words[i+1], ")") && val == "(cap," && i > 0 {
+			} else if strings.HasSuffix(val, ")") {
+				k := TakeNumFromString(words[i])
+				Cap(words, k, i-1)
+				words = append(words[:i], words[i+1:]...)
+				i--
+			}else if strings.HasSuffix(words[i+1], ")") && val == "(cap," && i > 0 {
 				k := TakeNumFromString(words[i+1])
 				Cap(words, k, i-1)
 				words = append(words[:i], words[i+2:]...)
@@ -86,79 +72,10 @@ func main() {
 		}
 
 	}
-	words = CleanStr(words)
-	fmt.Println()
-	fmt.Println("first editing: CAP_LOW_UP")
-	for i, val := range words {
-		if i != len(words)-1 {
-			fmt.Printf("%v-", val)
-		} else {
-			fmt.Print(val)
-		}
-	}
-	fmt.Println()
-
+	
 	// COMMA - TOMMA
 
-	for i := 0; i < len(words); i++ {
-		val := words[i]
-
-		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == "." {
-
-			words[i-1] += val
-			if i == len(words)-1 && i > 0 {
-				words = words[:i]
-				break
-			} else {
-				if i > 0 {
-					words = append(words[:i], words[i+1:]...)
-					i--
-				}
-			}
-
-		}
-
-		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':' || val == ".") {
-
-			words[i-1] += string(val[0])
-			words[i] = val[1:]
-
-		}
-
-		if len(val) >= 3 && val[:3] == "..." {
-			if len(val) == 2 {
-				words[i-1] += val
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else {
-				words[i-1] += val[:3]
-				words[i] = val[3:]
-			}
-		}
-
-		if len(val) >= 2 && val[:2] == "!?" {
-			if len(val) == 2 {
-				words[i-1] += val
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else {
-				words[i-1] += val[:2]
-				words[i] = val[2:]
-			}
-		}
-
-	}
-	words = CleanStr(words)
-	fmt.Println()
-	fmt.Println("second editing: coma-toma")
-	for i, val := range words {
-		if i != len(words)-1 {
-			fmt.Printf("%v-", val)
-		} else {
-			fmt.Print(val)
-		}
-	}
-	fmt.Println()
+	
 
 	count := 0
 	for _, val := range words {
@@ -168,7 +85,7 @@ func main() {
 	}
 
 	count /= 2
-
+	
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
@@ -183,9 +100,11 @@ func main() {
 					}
 				} else if strings.HasSuffix(val, "'") {
 					words[i] = words[i][:len(words[i])-1]
+				
 					words[i+1] = val[len(val)-1:] + words[i+1]
-
+				
 					count--
+					i++
 				} else if strings.HasPrefix(val, "'") {
 					count--
 				}
@@ -202,17 +121,67 @@ func main() {
 			}
 		}
 	}
+	
+	
+
 	words = CleanStr(words)
-	fmt.Println()
-	fmt.Println("third editing: \"'\"-symbols ")
-	for i, val := range words {
-		if i != len(words)-1 {
-			fmt.Printf("%v-", val)
-		} else {
-			fmt.Print(val)
+	
+	for i := 0; i < len(words); i++ {
+		val := words[i]
+		
+		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == "." {
+
+			words[i-1] += val
+			if i == len(words)-1 && i > 0 {
+				words = words[:i]
+				break
+			} else {
+				if i > 0 {
+					words = append(words[:i], words[i+1:]...)
+					i--
+				}
+			}
+
 		}
+
+		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':' || val == ".") {
+			
+			if val[0] != '!' && val[1] != '?'{
+
+			words[i-1] += string(val[0])
+			words[i] = val[1:]
+			}
+
+
+		}
+
+		if len(val) >= 3 && val[:3] == "..." {
+			if len(val) == 2 {
+				words = apnd(words, "...", i)
+				words = append(words[:i], words[i+1:]...)
+				i--
+			} else {
+				words = apnd(words, "...", i)
+				words[i] = val[3:]
+			}
+		}
+
+		if len(val) >= 2 && val[:2] == "!?" {
+			if len(val) == 2 {
+				words[i-1] += "!?"
+			
+				words = append(words[:i], words[i+1:]...)
+				
+				i--
+			} else {
+				words[i-1] += val[:2]
+				words[i] = val[2:]
+			}
+		}
+
 	}
-	fmt.Println()
+
+	
 
 	vowels := "aeiou"
 	// HEX and BIN and An and an
@@ -232,15 +201,7 @@ func main() {
 		}
 	}
 
-	fmt.Println()
-	fmt.Println("fourth editing: HEX -- BIN")
-	for i, val := range words {
-		if i != len(words)-1 {
-			fmt.Printf("%v-", val)
-		} else {
-			fmt.Print(val)
-		}
-	}
+	
 
 	for i := 0; i < len(words); i++ {
 		val := words[i]
@@ -274,20 +235,8 @@ func main() {
 		}
 
 	}
-	words = CleanStr(words)
-	fmt.Println()
-	fmt.Println("fifth editing: VOWELS ")
-	for i, val := range words {
-		if i != len(words)-1 {
-			fmt.Printf("%v-", val)
-		} else {
-			fmt.Print(val)
-		}
-	}
+	
 
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
 	fmt.Printf("Initially: %v\n", string(content))
 
 	fmt.Println()
@@ -407,4 +356,15 @@ func isWord(s string) bool {
 		}
 	}
 	return false
+}
+
+func apnd(words []string, s string, n int) []string{
+
+	for i :=n-1; i >=0; i--{
+		if isWord(words[i]){
+			words[i] += s
+			break
+		}
+	}
+	return words
 }
