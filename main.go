@@ -95,9 +95,9 @@ func main() {
 
 	}
 	
-	// COMMA - TOMMA
-
 	
+
+	// Punctuation handling (, ; ! ? : . ...)
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 		
@@ -154,7 +154,7 @@ func main() {
 	}	
 
 	words = CleanStr(words)
-
+		// Quote handling: merge `'` in correct positions
 	count := 0
 	for _, val := range words {
 		if val == "'" || strings.HasPrefix(val, "'") || strings.HasSuffix(val, "'") {
@@ -206,6 +206,7 @@ func main() {
 	
 
 	vowels := "aeiou"
+	 (hex) and (bin) converters
 	// HEX and BIN and An and an
 	for i := 0; i < len(words); i++ {
 		val := words[i]
@@ -224,7 +225,7 @@ func main() {
 	}
 
 	
-
+// Grammar: fix "a" → "an" and "an" → "a"
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
