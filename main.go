@@ -10,8 +10,12 @@ import (
 const alp = "abcdefghijklmnopqrstuvwxyz"
 
 func main() {
-	fmt.Println("Hi")
+
 	fmt.Println()
+	if len(os.Args) != 3{
+		fmt.Println("Error ! ")
+		return 
+	}
 	readF := os.Args[1]
 	writeF := os.Args[2]
 	content, _ := os.ReadFile(readF)
