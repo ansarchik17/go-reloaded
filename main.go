@@ -10,7 +10,7 @@ import (
 const alp = "abcdefghijklmnopqrstuvwxyz"
 
 func main() {
-
+// Ensure correct usage: program must receive exactly 2 arguments:
 	fmt.Println()
 	if len(os.Args) != 3{
 		fmt.Println("Error ! ")
@@ -18,19 +18,22 @@ func main() {
 	}
 	readF := os.Args[1]
 	writeF := os.Args[2]
+	// Read file content (ignoring error for brevity).
 	content, _ := os.ReadFile(readF)
-
+	
 	words := strings.Split(string(content), " ")
 
 	// ss := words[1]
 	// fmt.Println(ss[:5])
 
 
-	// to CAP and LOW and UP :
+	// MARKUP PROCESSING: (cap), (low), (up)
 
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
+
+		// ---------- (cap) ----------
 		if len(val) >= 5 && strings.HasPrefix(val, "(cap") {
 			if val == "(cap)" && i > 0 {
 				Cap(words, 1, i-1)
@@ -51,9 +54,16 @@ func main() {
 				words = append(words[:i], words[i+2:]...)
 				i -= 2
 			}
+
+			// ---------- (low) ----------
 		} else if len(val) >= 5 && strings.HasPrefix(val, "(low") {
 			if val == "(low)" && i > 0 {
 				Low(words, 1, i-1)
+				words = append(words[:i], words[i+1:]...)
+				i--
+			}else if strings.HasSuffix(val, ")") {
+				k := TakeNumFromString(words[i])
+				Low(words, k, i-1)
 				words = append(words[:i], words[i+1:]...)
 				i--
 			} else if strings.HasSuffix(words[i+1], ")") && val == "(low," && i > 0 {
@@ -62,9 +72,17 @@ func main() {
 				words = append(words[:i], words[i+2:]...)
 				i -= 2
 			}
+			
+
+			// ---------- (up) ----------
 		} else if len(val) >= 4 && strings.HasPrefix(val, "(up") {
 			if val == "(up)" && i > 0 {
 				Up(words, 1, i-1)
+				words = append(words[:i], words[i+1:]...)
+				i--
+			}else if strings.HasSuffix(val, ")") {
+				k := TakeNumFromString(words[i])
+				Up(words, k, i-1)
 				words = append(words[:i], words[i+1:]...)
 				i--
 			} else if strings.HasSuffix(words[i+1], ")") && val == "(up," && i > 0 {
