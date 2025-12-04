@@ -23,10 +23,6 @@ func main() {
 	
 	words := strings.Split(string(content), " ")
 
-	// ss := words[1]
-	// fmt.Println(ss[:5])
-
-
 	// MARKUP PROCESSING: (cap), (low), (up)
 
 	for i := 0; i < len(words); i++ {
@@ -206,7 +202,7 @@ func main() {
 	
 
 	vowels := "aeiou"
-	 (hex) and (bin) converters
+	// (hex) and (bin) converters
 	// HEX and BIN and An and an
 	for i := 0; i < len(words); i++ {
 		val := words[i]
@@ -258,6 +254,9 @@ func main() {
 		}
 
 	}
+
+	words = punc(words)
+	
 	
 
 	fmt.Printf("Initially: %v\n", string(content))
@@ -276,7 +275,7 @@ func main() {
 
 func Cap(s []string, n int, m int) {
 	for n > 0 && m >= 0 {
-		if s[m] != "" {
+		if isWord(s[m]) {
 			if len(s[m]) == 1 {
 				s[m] = strings.ToUpper(s[m])
 				n--
@@ -293,7 +292,7 @@ func Cap(s []string, n int, m int) {
 
 func Low(s []string, n int, m int) {
 	for n > 0 && m >= 0 {
-		if s[m] != "" {
+		if isWord(s[m]) {
 			s[m] = strings.ToLower(s[m])
 			n--
 		}
@@ -305,7 +304,7 @@ func Low(s []string, n int, m int) {
 
 func Up(s []string, n int, m int) {
 	for n > 0 && m >= 0 {
-		if s[m] != "" {
+		if isWord(s[m]) {
 			s[m] = strings.ToUpper(s[m])
 			n--
 		}
@@ -374,11 +373,20 @@ func CleanStr(s []string) []string {
 
 func isWord(s string) bool {
 	for _, val := range s {
-		if strings.Contains(alp, string(val)) {
+		if strings.Contains(alp,strings.ToLower(string(val))) {
 			return true
 		}
 	}
 	return false
+}
+
+func notWord(s string) bool {
+	for _, val := range s {
+		if strings.Contains(alp,strings.ToLower(string(val))) {
+			return false
+		}
+	}
+	return true
 }
 
 func apnd(words []string, s string, n int) []string{
@@ -389,5 +397,64 @@ func apnd(words []string, s string, n int) []string{
 			break
 		}
 	}
+	return words
+}
+
+func punc(words []string) []string{
+	// Punctuation handling (, ; ! ? : . ...)
+	for i := 0; i < len(words); i++ {
+		val := words[i]
+		
+		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == "." {
+
+			words[i-1] += val
+			if i == len(words)-1 && i > 0 {
+				words = words[:i]
+				break
+			} else {
+				if i > 0 {
+					words = append(words[:i], words[i+1:]...)
+					i--
+				}
+			}
+
+		}
+
+		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':' || val == ".") {
+			
+			if val[0] != '!' && val[1] != '?'{
+
+			words[i-1] += string(val[0])
+			words[i] = val[1:]
+			}
+
+
+		}
+
+		if len(val) >= 3 && val[:3] == "..." {
+			if len(val) == 2 {
+				words = apnd(words, "...", i)
+				words = append(words[:i], words[i+1:]...)
+				i--
+			} else {
+				words = apnd(words, "...", i)
+				words[i] = val[3:]
+			}
+		}
+
+		if len(val) >= 2 && val[:2] == "!?" {
+			if len(val) == 2 {
+				words[i-1] += "!?"
+			
+				words = append(words[:i], words[i+1:]...)
+				
+				i--
+			} else {
+				words[i-1] += val[:2]
+				words[i] = val[2:]
+			}
+		}
+
+	}	
 	return words
 }
