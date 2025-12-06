@@ -1,3 +1,7 @@
-Count' One; Two, Three. Four! Five? Six: @seven'
+Count 'One; Two, Three. Four! Five? Six: @seven'
 
-' you' a optimist.' human'
+'you' a optimist. 'human'
+
+'Helo'
+
+worsd.........?????????!!!!!!!

@@ -1,3 +1,7 @@
 count ' one ;two (up) ,THREE (low) . four !five ?six :seven ' (cap,8)
 
 ' you ' a optimist . ' human ' 
+
+' helo (cap) '
+
+worsd. ... ..... ????? ??? ? ! ! !!!!!
