@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"strconv"
@@ -10,26 +11,29 @@ import (
 const alp = "abcdefghijklmnopqrstuvwxyz"
 
 func main() {
-// Ensure correct usage: program must receive exactly 2 arguments:
+
 	fmt.Println()
-	if len(os.Args) != 3{
+	if len(os.Args) != 3 {
 		fmt.Println("Error ! ")
-		return 
+		return
 	}
 	readF := os.Args[1]
 	writeF := os.Args[2]
-	// Read file content (ignoring error for brevity).
-	content, _ := os.ReadFile(readF)
-	
-	words := strings.Split(string(content), " ")
 
-	// MARKUP PROCESSING: (cap), (low), (up)
+	content, _ := os.ReadFile(readF)
+
+	// for hours it is like protection
+	content = bytes.ReplaceAll(content, []byte(":"), []byte(":@"))
+
+	// Handle multiple lines correctly 
+	words := strings.Fields(string(content))
+
+	// Markup processing: (cap), (low), (up)
 
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
-
-		// ---------- (cap) ----------
+		// (cap) 
 		if len(val) >= 5 && strings.HasPrefix(val, "(cap") {
 			if val == "(cap)" && i > 0 {
 				Cap(words, 1, i-1)
@@ -40,7 +44,7 @@ func main() {
 				Cap(words, k, i-1)
 				words = append(words[:i], words[i+1:]...)
 				i--
-			}else if strings.HasSuffix(words[i+1], ")") && val == "(cap," && i > 0 {
+			} else if strings.HasSuffix(words[i+1], ")") && val == "(cap," && i > 0 {
 				k := TakeNumFromString(words[i+1])
 				Cap(words, k, i-1)
 				words = append(words[:i], words[i+2:]...)
@@ -51,13 +55,13 @@ func main() {
 				i -= 2
 			}
 
-			// ---------- (low) ----------
+			// (low)
 		} else if len(val) >= 5 && strings.HasPrefix(val, "(low") {
 			if val == "(low)" && i > 0 {
 				Low(words, 1, i-1)
 				words = append(words[:i], words[i+1:]...)
 				i--
-			}else if strings.HasSuffix(val, ")") {
+			} else if strings.HasSuffix(val, ")") {
 				k := TakeNumFromString(words[i])
 				Low(words, k, i-1)
 				words = append(words[:i], words[i+1:]...)
@@ -68,15 +72,14 @@ func main() {
 				words = append(words[:i], words[i+2:]...)
 				i -= 2
 			}
-			
 
-			// ---------- (up) ----------
+			// (up)
 		} else if len(val) >= 4 && strings.HasPrefix(val, "(up") {
 			if val == "(up)" && i > 0 {
 				Up(words, 1, i-1)
 				words = append(words[:i], words[i+1:]...)
 				i--
-			}else if strings.HasSuffix(val, ")") {
+			} else if strings.HasSuffix(val, ")") {
 				k := TakeNumFromString(words[i])
 				Up(words, k, i-1)
 				words = append(words[:i], words[i+1:]...)
@@ -88,15 +91,12 @@ func main() {
 				i -= 2
 			}
 		}
-
 	}
-	
-	
 
 	// Punctuation handling (, ; ! ? : . ...)
 	for i := 0; i < len(words); i++ {
 		val := words[i]
-		
+
 		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == "." {
 
 			words[i-1] += val
@@ -113,13 +113,12 @@ func main() {
 		}
 
 		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':' || val == ".") {
-			
-			if val[0] != '!' && val[1] != '?'{
 
-			words[i-1] += string(val[0])
-			words[i] = val[1:]
+			if val[0] != '!' && val[1] != '?' {
+
+				words[i-1] += string(val[0])
+				words[i] = val[1:]
 			}
-
 
 		}
 
@@ -137,9 +136,9 @@ func main() {
 		if len(val) >= 2 && val[:2] == "!?" {
 			if len(val) == 2 {
 				words[i-1] += "!?"
-			
+
 				words = append(words[:i], words[i+1:]...)
-				
+
 				i--
 			} else {
 				words[i-1] += val[:2]
@@ -147,23 +146,26 @@ func main() {
 			}
 		}
 
-	}	
+	}
 
 	words = CleanStr(words)
-		// Quote handling: merge `'` in correct positions
+
+	// Quote handling
 	count := 0
 	for _, val := range words {
 		if val == "'" || strings.HasPrefix(val, "'") || strings.HasSuffix(val, "'") {
 			count++
 		}
 	}
-
 	count /= 2
-	
+
+	// Correct quote detection 
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
-		if strings.HasPrefix(val, "'") || strings.HasSuffix(val, "'") {
+		// Only treat as standalone quote if val == "'"
+		if val == "'" || (val != "'" && (val[0] == '\'' || val[len(val)-1] == '\'')) {
+
 			if count > 0 {
 				if val == "'" {
 					if i < len(words)-1 {
@@ -174,9 +176,9 @@ func main() {
 					}
 				} else if strings.HasSuffix(val, "'") {
 					words[i] = words[i][:len(words[i])-1]
-				
+
 					words[i+1] = val[len(val)-1:] + words[i+1]
-				
+
 					count--
 					i++
 				} else if strings.HasPrefix(val, "'") {
@@ -195,15 +197,12 @@ func main() {
 			}
 		}
 	}
-	
-	
 
 	words = CleanStr(words)
-	
 
 	vowels := "aeiou"
+
 	// (hex) and (bin) converters
-	// HEX and BIN and An and an
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
@@ -220,8 +219,7 @@ func main() {
 		}
 	}
 
-	
-// Grammar: fix "a" → "an" and "an" → "a"
+	// Grammar: a/an
 	for i := 0; i < len(words); i++ {
 		val := words[i]
 
@@ -257,15 +255,16 @@ func main() {
 
 	words = punc(words)
 	words = fend(words)
-	
-	
 
 	fmt.Printf("Initially: %v\n", string(content))
 
 	fmt.Println()
 
 	contPaste := strings.Join(words, " ")
-	
+
+	// (restore hours) 
+	contPaste = strings.ReplaceAll(contPaste, ":@" , ":")
+
 	os.WriteFile(writeF, []byte(contPaste), 0o644)
 
 	contR, _ := os.ReadFile(writeF)
@@ -315,15 +314,16 @@ func Up(s []string, n int, m int) {
 	}
 }
 
+// Extract digits anywhere in the string
 func TakeNumFromString(s string) int {
 	res := ""
-
 	for _, val := range s {
 		if val >= '0' && val <= '9' {
 			res += string(val)
-		} else {
-			break
 		}
+	}
+	if res == "" {
+		return 0
 	}
 	ans, _ := strconv.Atoi(res)
 	return ans
@@ -368,13 +368,13 @@ func CleanStr(s []string) []string {
 		}
 
 	}
-	
+
 	return strings.Split(ss, " ")
 }
 
 func isWord(s string) bool {
 	for _, val := range s {
-		if strings.Contains(alp,strings.ToLower(string(val))) {
+		if strings.Contains(alp, strings.ToLower(string(val))) {
 			return true
 		}
 	}
@@ -383,17 +383,17 @@ func isWord(s string) bool {
 
 func notWord(s string) bool {
 	for _, val := range s {
-		if strings.Contains(alp,strings.ToLower(string(val))) {
+		if strings.Contains(alp, strings.ToLower(string(val))) {
 			return false
 		}
 	}
 	return true
 }
 
-func apnd(words []string, s string, n int) []string{
+func apnd(words []string, s string, n int) []string {
 
-	for i :=n-1; i >=0; i--{
-		if isWord(words[i]){
+	for i := n - 1; i >= 0; i-- {
+		if isWord(words[i]) {
 			words[i] += s
 			break
 		}
@@ -401,11 +401,10 @@ func apnd(words []string, s string, n int) []string{
 	return words
 }
 
-func punc(words []string) []string{
-	// Punctuation handling (, ; ! ? : . ...)
+func punc(words []string) []string {
 	for i := 0; i < len(words); i++ {
 		val := words[i]
-		
+
 		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == "." {
 
 			words[i-1] += val
@@ -422,13 +421,12 @@ func punc(words []string) []string{
 		}
 
 		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':' || val == ".") {
-			
-			if val[0] != '!' && val[1] != '?'{
 
-			words[i-1] += string(val[0])
-			words[i] = val[1:]
+			if val[0] != '!' && val[1] != '?' {
+
+				words[i-1] += string(val[0])
+				words[i] = val[1:]
 			}
-
 
 		}
 
@@ -446,9 +444,9 @@ func punc(words []string) []string{
 		if len(val) >= 2 && val[:2] == "!?" {
 			if len(val) == 2 {
 				words[i-1] += "!?"
-			
+
 				words = append(words[:i], words[i+1:]...)
-				
+
 				i--
 			} else {
 				words[i-1] += val[:2]
@@ -456,16 +454,16 @@ func punc(words []string) []string{
 			}
 		}
 
-	}	
+	}
 	return words
 }
 
-func fend(words []string) []string{
+func fend(words []string) []string {
 
-	for i := 0; i < len(words); i++{
+	for i := 0; i < len(words); i++ {
 		val := words[i]
 
-		if notWord(val) && i != 0{
+		if notWord(val) && i != 0 {
 			words[i-1] += val
 			words = append(words[:i], words[i+1:]...)
 			i--
