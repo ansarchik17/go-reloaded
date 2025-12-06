@@ -1,4 +1,3 @@
-count' one; TWO, three. four! five? six: @seven' (cap,8)count' One; TWO, three. four! five? six: @seven'
-Count' One; TWO, three. four! five? six: @seven'
-Count' One; TWO, three. four! five? six: @seven'
-Count' One; TWO, three. four! five? six: @seven'
+Count' One; Two, Three. Four! Five? Six: @seven'
+
+' you' a optimist.' human'
