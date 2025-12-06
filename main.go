@@ -26,241 +26,121 @@ func main() {
 	content = bytes.ReplaceAll(content, []byte(":"), []byte(":@"))
 
 	// Handle multiple lines correctly 
-	words := strings.Fields(string(content))
+	lines := strings.Split(string(content), "\n")
+	for li, line := range lines {
+		words := strings.Fields(line)
 
-	// Markup processing: (cap), (low), (up)
+		// Markup processing: (cap), (low), (up)
+		for i := 0; i < len(words); i++ {
+			val := words[i]
 
-	for i := 0; i < len(words); i++ {
-		val := words[i]
-
-		// (cap) 
-		if len(val) >= 5 && strings.HasPrefix(val, "(cap") {
-			if val == "(cap)" && i > 0 {
-				Cap(words, 1, i-1)
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else if strings.HasSuffix(val, ")") {
-				k := TakeNumFromString(words[i])
-				Cap(words, k, i-1)
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else if strings.HasSuffix(words[i+1], ")") && val == "(cap," && i > 0 {
-				k := TakeNumFromString(words[i+1])
-				Cap(words, k, i-1)
-				words = append(words[:i], words[i+2:]...)
-				i -= 2
-			} else if val == "(cap" && words[i+1] == ")" {
-				Cap(words, 1, i-1)
-				words = append(words[:i], words[i+2:]...)
-				i -= 2
-			}
-
-			// (low)
-		} else if len(val) >= 5 && strings.HasPrefix(val, "(low") {
-			if val == "(low)" && i > 0 {
-				Low(words, 1, i-1)
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else if strings.HasSuffix(val, ")") {
-				k := TakeNumFromString(words[i])
-				Low(words, k, i-1)
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else if strings.HasSuffix(words[i+1], ")") && val == "(low," && i > 0 {
-				k := TakeNumFromString(words[i+1])
-				Low(words, k, i-1)
-				words = append(words[:i], words[i+2:]...)
-				i -= 2
-			}
-
-			// (up)
-		} else if len(val) >= 4 && strings.HasPrefix(val, "(up") {
-			if val == "(up)" && i > 0 {
-				Up(words, 1, i-1)
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else if strings.HasSuffix(val, ")") {
-				k := TakeNumFromString(words[i])
-				Up(words, k, i-1)
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else if strings.HasSuffix(words[i+1], ")") && val == "(up," && i > 0 {
-				k := TakeNumFromString(words[i+1])
-				Up(words, k, i-1)
-				words = append(words[:i], words[i+2:]...)
-				i -= 2
-			}
-		}
-	}
-
-	// Punctuation handling (, ; ! ? : . ...)
-	for i := 0; i < len(words); i++ {
-		val := words[i]
-
-		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == "." {
-
-			words[i-1] += val
-			if i == len(words)-1 && i > 0 {
-				words = words[:i]
-				break
-			} else {
-				if i > 0 {
+			// (cap) 
+			if len(val) >= 5 && strings.HasPrefix(val, "(cap") {
+				if val == "(cap)" && i > 0 {
+					Cap(words, 1, i-1)
 					words = append(words[:i], words[i+1:]...)
 					i--
+				} else if strings.HasSuffix(val, ")") {
+					k := TakeNumFromString(words[i])
+					Cap(words, k, i-1)
+					words = append(words[:i], words[i+1:]...)
+					i--
+				} else if strings.HasSuffix(words[i+1], ")") && val == "(cap," && i > 0 {
+					k := TakeNumFromString(words[i+1])
+					Cap(words, k, i-1)
+					words = append(words[:i], words[i+2:]...)
+					i -= 2
+				} else if val == "(cap" && words[i+1] == ")" {
+					Cap(words, 1, i-1)
+					words = append(words[:i], words[i+2:]...)
+					i -= 2
+				}
+
+				// (low)
+			} else if len(val) >= 5 && strings.HasPrefix(val, "(low") {
+				if val == "(low)" && i > 0 {
+					Low(words, 1, i-1)
+					words = append(words[:i], words[i+1:]...)
+					i--
+				} else if strings.HasSuffix(val, ")") {
+					k := TakeNumFromString(words[i])
+					Low(words, k, i-1)
+					words = append(words[:i], words[i+1:]...)
+					i--
+				} else if strings.HasSuffix(words[i+1], ")") && val == "(low," && i > 0 {
+					k := TakeNumFromString(words[i+1])
+					Low(words, k, i-1)
+					words = append(words[:i], words[i+2:]...)
+					i -= 2
+				}
+
+				// (up)
+			} else if len(val) >= 4 && strings.HasPrefix(val, "(up") {
+				if val == "(up)" && i > 0 {
+					Up(words, 1, i-1)
+					words = append(words[:i], words[i+1:]...)
+					i--
+				} else if strings.HasSuffix(val, ")") {
+					k := TakeNumFromString(words[i])
+					Up(words, k, i-1)
+					words = append(words[:i], words[i+1:]...)
+					i--
+				} else if strings.HasSuffix(words[i+1], ")") && val == "(up," && i > 0 {
+					k := TakeNumFromString(words[i+1])
+					Up(words, k, i-1)
+					words = append(words[:i], words[i+2:]...)
+					i -= 2
 				}
 			}
-
 		}
 
-		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':' || val == ".") {
+		// Punctuation handling (, ; ! ? : . ...)
+		for i := 0; i < len(words); i++ {
+			val := words[i]
 
-			if val[0] != '!' && val[1] != '?' {
+			if (val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == ".") && i > 0 {
+				words[i-1] += val
+				words = append(words[:i], words[i+1:]...)
+				i--
+				continue
+			}
 
+			if i > 0 && len(val) > 1 && strings.Contains(",;!?@.:", string(val[0])) {
 				words[i-1] += string(val[0])
 				words[i] = val[1:]
 			}
 
-		}
-
-		if len(val) >= 3 && val[:3] == "..." {
-			if len(val) == 2 {
+			if len(val) >= 3 && val[:3] == "..." && i > 0 {
 				words = apnd(words, "...", i)
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else {
-				words = apnd(words, "...", i)
-				words[i] = val[3:]
-			}
-		}
-
-		if len(val) >= 2 && val[:2] == "!?" {
-			if len(val) == 2 {
-				words[i-1] += "!?"
-
-				words = append(words[:i], words[i+1:]...)
-
-				i--
-			} else {
-				words[i-1] += val[:2]
-				words[i] = val[2:]
-			}
-		}
-
-	}
-
-	words = CleanStr(words)
-
-	// Quote handling
-	count := 0
-	for _, val := range words {
-		if val == "'" || strings.HasPrefix(val, "'") || strings.HasSuffix(val, "'") {
-			count++
-		}
-	}
-	count /= 2
-
-	// Correct quote detection 
-	for i := 0; i < len(words); i++ {
-		val := words[i]
-
-		// Only treat as standalone quote if val == "'"
-		if val == "'" || (val != "'" && (val[0] == '\'' || val[len(val)-1] == '\'')) {
-
-			if count > 0 {
-				if val == "'" {
-					if i < len(words)-1 {
-						words[i+1] = val + words[i+1]
-						words = append(words[:i], words[i+1:]...)
-
-						count--
-					}
-				} else if strings.HasSuffix(val, "'") {
-					words[i] = words[i][:len(words[i])-1]
-
-					words[i+1] = val[len(val)-1:] + words[i+1]
-
-					count--
-					i++
-				} else if strings.HasPrefix(val, "'") {
-					count--
-				}
-			} else {
-				if val == "'" {
-					words[i-1] = words[i-1] + val
+				if len(val) == 3 {
 					words = append(words[:i], words[i+1:]...)
 					i--
-				} else if strings.HasPrefix(val, "'") {
-					words[i-1] = words[i-1] + string(val[0])
-					words[i] = words[i][1:]
-
+				} else {
+					words[i] = val[3:]
 				}
 			}
-		}
-	}
 
-	words = CleanStr(words)
-
-	vowels := "aeiou"
-
-	// (hex) and (bin) converters
-	for i := 0; i < len(words); i++ {
-		val := words[i]
-
-		if val == "(hex)" && i != 0 {
-			words[i-1] = HexToDec(words[i-1])
-			words = append(words[:i], words[i+1:]...)
-			i--
-		}
-
-		if val == "(bin)" && i != 0 {
-			words[i-1] = BinToDec(words[i-1])
-			words = append(words[:i], words[i+1:]...)
-			i--
-		}
-	}
-
-	// Grammar: a/an
-	for i := 0; i < len(words); i++ {
-		val := words[i]
-
-		if val == "a" || val == "A" {
-			if i != len(words)-1 && words[i+1] != "" {
-				if words[i+1] == "and" {
-					continue
-				} else if strings.Contains(vowels, strings.ToLower(string(words[i+1][0]))) && len(words[i+1]) > 1 {
-					if val == "a" {
-						words[i] = "an"
-					} else {
-						words[i] = "An"
-					}
+			if len(val) >= 2 && val[:2] == "!?" && i > 0 {
+				words[i-1] += "!?"
+				if len(val) == 2 {
+					words = append(words[:i], words[i+1:]...)
+					i--
+				} else {
+					words[i] = val[2:]
 				}
 			}
 		}
 
-		if val == "an" || val == "An" {
-			if i != len(words)-1 && words[i+1] != "" {
-				if words[i+1] == "and" {
-					continue
-				} else if !strings.Contains(vowels, strings.ToLower(string(words[i+1][0]))) && len(words[i+1]) > 1 {
-					if val == "an" {
-						words[i] = "a"
-					} else {
-						words[i] = "A"
-					}
-				}
-			}
-		}
-
+		words = CleanStr(words)
+		words = punc(words)
+		words = fend(words)
+		
+		lines[li] = strings.Join(words, " ")
 	}
 
-	words = punc(words)
-	words = fend(words)
+	
 
-	fmt.Printf("Initially: %v\n", string(content))
-
-	fmt.Println()
-
-	contPaste := strings.Join(words, " ")
+	contPaste := strings.Join(lines, "\n")
 
 	// (restore hours) 
 	contPaste = strings.ReplaceAll(contPaste, ":@" , ":")
@@ -268,8 +148,9 @@ func main() {
 	os.WriteFile(writeF, []byte(contPaste), 0o644)
 
 	contR, _ := os.ReadFile(writeF)
+	fmt.Printf("Initially: %v\n", string(content))
+	fmt.Println()
 	fmt.Printf("Result: %v\n", string(contR))
-
 	fmt.Println()
 }
 
@@ -278,15 +159,12 @@ func Cap(s []string, n int, m int) {
 		if isWord(s[m]) {
 			if len(s[m]) == 1 {
 				s[m] = strings.ToUpper(s[m])
-				n--
 			} else {
 				s[m] = strings.ToUpper(s[m][:1]) + s[m][1:]
-				n--
 			}
+			n--
 		}
-
 		m--
-
 	}
 }
 
@@ -296,9 +174,7 @@ func Low(s []string, n int, m int) {
 			s[m] = strings.ToLower(s[m])
 			n--
 		}
-
 		m--
-
 	}
 }
 
@@ -308,13 +184,10 @@ func Up(s []string, n int, m int) {
 			s[m] = strings.ToUpper(s[m])
 			n--
 		}
-
 		m--
-
 	}
 }
 
-// Extract digits anywhere in the string
 func TakeNumFromString(s string) int {
 	res := ""
 	for _, val := range s {
@@ -353,23 +226,14 @@ func CleanStr(s []string) []string {
 	ss := ""
 	for i := 0; i < len(s); i++ {
 		val := s[i]
-
 		if val != "" {
-			if val == ")" && i != 0 {
-				ss = ss[:len(ss)-1]
-				ss += val
-			} else {
-				ss += val
-			}
-
+			ss += val
 			if i < len(s)-1 {
 				ss += " "
 			}
 		}
-
 	}
-
-	return strings.Split(ss, " ")
+	return strings.Fields(ss)
 }
 
 func isWord(s string) bool {
@@ -391,7 +255,6 @@ func notWord(s string) bool {
 }
 
 func apnd(words []string, s string, n int) []string {
-
 	for i := n - 1; i >= 0; i-- {
 		if isWord(words[i]) {
 			words[i] += s
@@ -404,71 +267,22 @@ func apnd(words []string, s string, n int) []string {
 func punc(words []string) []string {
 	for i := 0; i < len(words); i++ {
 		val := words[i]
-
-		if val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == "." {
-
+		if (val == "," || val == ";" || val == "!" || val == "?" || val == ":" || val == ".") && i > 0 {
 			words[i-1] += val
-			if i == len(words)-1 && i > 0 {
-				words = words[:i]
-				break
-			} else {
-				if i > 0 {
-					words = append(words[:i], words[i+1:]...)
-					i--
-				}
-			}
-
+			words = append(words[:i], words[i+1:]...)
+			i--
 		}
-
-		if i > 0 && len(val) > 1 && (val[0] == ',' || val[0] == ';' || val[0] == '!' || val[0] == '?' || val[0] == ':' || val == ".") {
-
-			if val[0] != '!' && val[1] != '?' {
-
-				words[i-1] += string(val[0])
-				words[i] = val[1:]
-			}
-
-		}
-
-		if len(val) >= 3 && val[:3] == "..." {
-			if len(val) == 2 {
-				words = apnd(words, "...", i)
-				words = append(words[:i], words[i+1:]...)
-				i--
-			} else {
-				words = apnd(words, "...", i)
-				words[i] = val[3:]
-			}
-		}
-
-		if len(val) >= 2 && val[:2] == "!?" {
-			if len(val) == 2 {
-				words[i-1] += "!?"
-
-				words = append(words[:i], words[i+1:]...)
-
-				i--
-			} else {
-				words[i-1] += val[:2]
-				words[i] = val[2:]
-			}
-		}
-
 	}
 	return words
 }
 
 func fend(words []string) []string {
-
 	for i := 0; i < len(words); i++ {
-		val := words[i]
-
-		if notWord(val) && i != 0 {
-			words[i-1] += val
+		if notWord(words[i]) && i > 0 {
+			words[i-1] += words[i]
 			words = append(words[:i], words[i+1:]...)
 			i--
 		}
-
 	}
 	return words
 }
