@@ -176,7 +176,7 @@ a or b
 a xor b
 A aplle (up) ?
 I'm fine !
-" arra'nniu ' nuinuin " uiui 
+" arra 'nniu ' nuinuin " uiui 
 
 111 (bin)
 

@@ -1,4 +1,4 @@
-TEST A— Case operators up, low)
+TEST A— Case Operators, low)
 
 Input:
 It was the best of times, it was the worst of TIMES, it was the age of wisdom, It Was The Age Of Foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, it was the winter of despair.
@@ -123,12 +123,12 @@ Result: PASS
 TEST G— Invalid operator parameters (robustness)
 
 Input:
-This is so exciting.
+This is so EXCITING.
 hello world
-one two
+One Two
 1G
 102
-)
+
 
 Correct form:
 This is so EXCITING.
@@ -138,12 +138,12 @@ One Two
 102
 
 My response:
-This is so exciting.
+This is so EXCITING.
 hello world
 One Two
 1G
 102
-)
+
 
 Result: FAIL
 
@@ -176,7 +176,7 @@ a or b
 a xor b
 An APLLE?
 I'm fine!
-"arra'nniu' nuinuin" uiui
+"arra 'nniu' nuinuin" uiui
 
 7
 
