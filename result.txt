@@ -50,7 +50,6 @@ I should stop shouting
 Welcome to the Brooklyn Bridge
 This is SO EXCITING.
 
-Result: PASS
 
 ---
 
@@ -71,7 +70,6 @@ I was sitting over there, and then BAMM!!
 I was thinking... You were right
 word!!!!!!!!!!!!........,,,,,,,,,??????????:::::::::;;;;;;;;;;;;;:
 
-Result: PASS
 
 ---
 
@@ -88,8 +86,6 @@ As Elton John said: 'I am the most well-known homosexual in the world'
 My response:
 I am exactly how they describe me: 'awesome'
 As Elton John said: 'I am the most well-known homosexual in the world'
-
-Result: PASS
 
 ---
 
@@ -116,7 +112,6 @@ a cat
 An Apple
 an hour
 
-Result: PASS
 
 ---
 
@@ -143,9 +138,6 @@ hello world
 One Two
 1G
 102
-
-
-Result: FAIL
 
 
 There is also some tests:
