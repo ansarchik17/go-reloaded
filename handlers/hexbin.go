@@ -1,4 +1,4 @@
-package funcs
+package handlers
 
 import (
 	"strconv"
@@ -39,7 +39,7 @@ func ProcessHexBin(words []string) []string {
 				decimal, err := strconv.ParseInt(prevWord, 2, 64)
 				if err == nil {
 					words[i-1] = strconv.FormatInt(decimal, 10)
-					words = append(words[:i], words[i+1:]...)
+					words = append(words[:i], words[i+1:]...) // i+1
 					i--
 				} else {
 					// Invalid bin, remove the (bin) marker

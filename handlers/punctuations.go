@@ -1,4 +1,4 @@
-package funcs
+package handlers
 
 import "strings"
 
@@ -96,6 +96,20 @@ func ReattachPunc(words []string) []string {
 }
 
 func IsWord(s string) bool {
+	// Check if it's a number (hex or decimal)
+	if len(s) > 0 {
+		allDigits := true
+		for _, char := range s {
+			if !((char >= '0' && char <= '9') || (char >= 'A' && char <= 'F') || (char >= 'a' && char <= 'f')) {
+				allDigits = false
+				break
+			}
+		}
+		if allDigits {
+			return true
+		}
+	}
+	// Check if it contains letters
 	for _, val := range s {
 		if strings.Contains(alp, strings.ToLower(string(val))) {
 			return true

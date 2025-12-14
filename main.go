@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-reloaded/funcs"
+	"go-reloaded/handlers"
 	"os"
 	"strings"
 )
@@ -30,23 +30,23 @@ func main() {
 		words := strings.Fields(line)
 
 		// Preprocess punctuation: separate leading/trailing punctuation
-		words = funcs.SeparatePunc(words)
+		words = handlers.SeparatePunc(words)
 
 		// Process hex/bin conversions first (they work on the word before)
-		words = funcs.ProcessHexBin(words)
+		words = handlers.ProcessHexBin(words)
 
 		// Process case commands: (cap), (low), (up)
-		words = funcs.Ucl(words)
+		words = handlers.Ucl(words)
 
 		// Reattach punctuation after case changes
-		words = funcs.ReattachPunc(words)
+		words = handlers.ReattachPunc(words)
 
 		// Merge quotes
-		words = funcs.MergeQuotes(words)
-		words = funcs.MergeDQuotes(words)
+		words = handlers.MergeQuotes(words)
+		words = handlers.MergeDQuotes(words)
 
 		// Fix articles (a/an)
-		words = funcs.FixArticles(words)
+		words = handlers.FixArticles(words)
 
 		lines[li] = strings.Join(words, " ")
 	}
