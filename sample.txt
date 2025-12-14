@@ -1,10 +1,162 @@
+TEST A — Case operators (cap, up, low)
+
+Input:
+it (cap) was the best of times, it was the worst of times (up) , it was the age of wisdom, it was the age of foolishness (cap, 6) , it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, IT WAS THE (low, 3) winter of despair.
+
+Correct form:
+It was the best of times, it was the worst of TIMES, it was the age of wisdom, It Was The Age Of Foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, it was the winter of despair.
+
+My response:
+it was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of darkness, it was the spring of hope, it was the winter of despair.
+
+---
+
+TEST B — Numbers (hex, bin)
+
+Input:
+Simply add 42 (hex) and 10 (bin) and you will see the result is 68.
+1E (hex) files were added
+It has been 10 (bin) years
+
+Correct form:
+Simply add 66 and 2 and you will see the result is 68.
+30 files were added
+It has been 2 years
+
+My response:
+Simply add42 (hex) and10 (bin) and you will see the result is68.
+1E (hex) files were added
+It has been10 (bin) years
+
+---
+
+TEST C — Simple case commands
+
+Input:
+Ready, set, go (up) !
+I should stop SHOUTING (low)
+Welcome to the Brooklyn bridge (cap)
+This is so exciting . (up, 2)
+
+Correct form:
+Ready, set, GO!
+I should stop shouting
+Welcome to the Brooklyn Bridge
+This is SO EXCITING.
+
+My response:
+Ready, set, GO!
+I should stop shouting
+Welcome to the Brooklyn Bridge
+This is SO EXCITING.
+
+Result: PASS
+
+---
+
+TEST D — Punctuation and symbol groups
+
+Input:
+I was sitting over     there   ,and then           BAMM !  !
+I was thinking .  .    . You were right
+word!     !!!!!!!!!!!  ........   ,,,,,,,,,  ??????????     :::::::::;;;;;;;;;;;;;       :
+
+Correct form:
+I was sitting over there, and then BAMM!!
+I was thinking... You were right
+word!!!!!!!!!!!!........,,,,,,,,,??????????:::::::::;;;;;;;;;;;;;:
+
+My response:
+I was sitting over there, and then BAMM!!
+I was thinking... You were right
+word!!!!!!!!!!!!........,,,,,,,,,??????????:::::::::;;;;;;;;;;;;;:
+
+Result: PASS
+
+---
+
+TEST E — Single quotes and trimming
+
+Input:
+I am exactly how they describe me: '    awesome '
+As Elton John said: ' I am the most well-known homosexual in the world '
+
+Correct form:
+I am exactly how they describe me: 'awesome'
+As Elton John said: 'I am the most well-known homosexual in the world'
+
+My response:
+I am exactly how they describe me: 'awesome'
+As Elton John said: 'I am the most well-known homosexual in the world'
+
+Result: PASS
+
+---
+
+TEST F — Articles (a / an)
+
+Input:
+There it was. A amazing rock!
+a apple
+an cat
+A Apple
+a hour
+
+Correct form:
+There it was. An amazing rock!
+an apple
+a cat
+An Apple
+an hour
+
+My response:
+There it was. An amazing rock!
+an apple
+a cat
+An Apple
+an hour
+
+Result: PASS
+
+---
+
+TEST G — Invalid operator parameters (robustness)
+
+Input:
+This is so exciting . (up, a)
+hello (cap, -2) world
+one two (cap, 999)
+1G (hex)
+102 (bin)
+(up, )
+
+Correct form:
+This is so EXCITING.
+hello world
+One Two
+1G
+102
+
+My response:
+This is so exciting. (up, a)
+hello world
+One Two
+1G (hex)
+102 (bin)
+(up, )
+
+Result: FAIL
+
+
+There is also some tests:
+
 count ' one ;two (up) ,THREE (low) . four !five ?six :seven ' (cap,     8  )
 
 ' you ' a optimist . ' human ' 
 
 ' helo (cap) '
 
-worsd. ... ..... ????? ??? ? ! ! !!!!!
+worsd. ... ..... ??? !!! ?? ??? ? ! ! !!!!!
 
 A hour
 
@@ -16,3 +168,15 @@ AN robot
 '-1'
 
 " dfigjfd "
+
+a history
+a hour
+a and b
+a or b
+a xor b
+A aplle (up) ?
+I'm fine !
+" arra'nniu ' nuinuin " uiui 
+
+111 (bin)
+

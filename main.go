@@ -24,22 +24,31 @@ func main() {
 	// Handle multiple lines correctly
 	lines := strings.Split(string(content), "\n")
 	for li, line := range lines {
+		if line == "" {
+			continue
+		}
 		words := strings.Fields(line)
 
 		// Preprocess punctuation: separate leading/trailing punctuation
 		words = funcs.SeparatePunc(words)
 
-		// Markup processing: (cap), (low), (up)
-		for i := 0; i < len(words); i++ {
+		// Process hex/bin conversions first (they work on the word before)
+		words = funcs.ProcessHexBin(words)
 
-			words = funcs.Ucl(words)
+		// Process case commands: (cap), (low), (up)
+		words = funcs.Ucl(words)
 
-			words = funcs.ReattachPunc(words)
-			words = funcs.MergeQuotes(words)
-			words = funcs.MergeDQuotes(words)
-			words = funcs.FixArticles(words)
-			lines[li] = strings.Join(words, " ")
-		}
+		// Reattach punctuation after case changes
+		words = funcs.ReattachPunc(words)
+
+		// Merge quotes
+		words = funcs.MergeQuotes(words)
+		words = funcs.MergeDQuotes(words)
+
+		// Fix articles (a/an)
+		words = funcs.FixArticles(words)
+
+		lines[li] = strings.Join(words, " ")
 	}
 
 	contPaste := strings.Join(lines, "\n")

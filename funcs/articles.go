@@ -23,6 +23,10 @@ func FixArticles(words []string) []string {
 			continue
 		}
 
+		if next == "and" || next == "or" {
+			continue
+		}
+
 		lowerNext := strings.ToLower(next)
 		if strings.EqualFold(val, "a") || strings.EqualFold(val, "an") {
 			needsAn := false
