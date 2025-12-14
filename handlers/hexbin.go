@@ -81,3 +81,5 @@ func IsBinNumber(s string) bool {
 	}
 	return true
 }
+
+//a
