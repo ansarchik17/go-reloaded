@@ -117,5 +117,3 @@ func IsWord(s string) bool {
 	}
 	return false
 }
-
-//s
