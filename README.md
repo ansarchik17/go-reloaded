@@ -50,7 +50,7 @@ The program recognizes inline markup instructions and applies them to previous w
 
 All three markup types support:
 
-* `(cmd)` (affects one previous word)
+* `(cmd)` (affects one previous word))
 * `(cmd3)` (number appended)
 * `(cmd,3)` (number separated by comma)
 * `(cmd ,3)` variants where the number is in the next word
