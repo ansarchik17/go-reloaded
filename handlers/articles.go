@@ -66,5 +66,3 @@ func FixArticles(words []string) []string {
 	}
 	return words
 }
-
-//q
